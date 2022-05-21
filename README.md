@@ -1,6 +1,6 @@
 [`pure | 📦`](https://github.com/telamon/create-pure)
 [`code style | standard`](https://standardjs.com/)
-# pico-seed
+# pico-template
 
 This is a [pico-stack](https://github.com/telamon/picostack) project template
 containing a minimal 'todo'-app using svelte
