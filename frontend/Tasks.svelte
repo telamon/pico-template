@@ -69,5 +69,4 @@ const updateStatus = (id, status) => {
     border-radius: var(--border-radius);
   }
   .tasks { min-height: 6em; }
-  .ctrls { text-align: right; }
 </style>
