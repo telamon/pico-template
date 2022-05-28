@@ -76,7 +76,7 @@ const nBlocks = svlt(
     <btn class="inverse" on:click={purge}>Purge</btn>
   </span>
   <span class="primary">
-    [DevelBar]
+    [DevBar]
   </span>
   Kernel: <strong>{$run}</strong>
   Peers: <strong>{$connections}</strong>

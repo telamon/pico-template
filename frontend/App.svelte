@@ -13,14 +13,19 @@ const bootloader = boot()
     <h2>Hello Web 3.0</h2>
     <p>
       This is the
-      <bold><a href="https://github.com/telamon/picostack">pico-stack</a></bold>
-      quickstart template, run:
+      <strong><a href="https://github.com/telamon/picostack">pico-stack</a></strong>
+      quickstart template.<br/>
+      To build your own <strong>true</strong> decentralized web-app run:
     </p>
     <pre><code>
       &gt; npx degit <a href="https://github.com/telamon/pico-template">telamon/pico-template</a> my-project
     </code></pre>
     <p>
-      and build your own <strong>fully decentralized</strong> web-app.
+      We're building a DIY blockchain toolkit that ignores crypto-economy
+      and focuses on application logic .
+      <br/>
+      <br/>
+      <i>Coinless Blockchain, a means to longer lasting decentralization.</i>
     </p>
   </section>
 
