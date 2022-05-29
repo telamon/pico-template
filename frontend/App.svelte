@@ -20,13 +20,6 @@ const bootloader = boot()
     <pre><code>
       &gt; npx degit <a href="https://github.com/telamon/pico-template">telamon/pico-template</a> my-project
     </code></pre>
-    <p>
-      We're building a DIY blockchain toolkit that ignores crypto-economy
-      and focuses on application logic .
-      <br/>
-      <br/>
-      <i>Coinless Blockchain, a means to longer lasting decentralization.</i>
-    </p>
   </section>
 
   <!-- Wait for bootloader then show Tasks -->
