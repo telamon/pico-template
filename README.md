@@ -1,5 +1,6 @@
 [`pure | 📦`](https://github.com/telamon/create-pure)
 [`code style | standard`](https://standardjs.com/)
+
 # pico-template
 
 This is a [pico-stack](https://github.com/telamon/picostack) project template
@@ -11,19 +12,24 @@ as template engine.
 [DEMO](https://pico-todo.surge.sh/)
 
 ## Getting started
+
 Create your project if you already haven't
+
 ```bash
-npx degit telamon/picostack-template my-project
+npx degit telamon/pico-template my-project
 ```
 
 Then start the local dev-server
+
 ```bash
 yarn
 yarn dev
 ```
+
 and navigate to [https://localhost:5000](https://localhost:5000)
 
 Other included scripts:
+
 ```bash
 yarn dev    # Starts local dev-server
 yarn test   # Blockend dev: runs unit tests
