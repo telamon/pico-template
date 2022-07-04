@@ -1,5 +1,6 @@
 const { decodeBlock } = require('picostack').SimpleKernel
 const ALLOWED_STATES = ['todo', 'in-progress', 'to-verify', 'done', 'wontfix']
+
 function TasksSlice () {
   return {
     name: 'tasks', // Sets the name of this slice/registry
@@ -7,13 +8,13 @@ function TasksSlice () {
     initialValue: [], // Initial value slice value.
 
     filter ({ block, state }) {
-      const data = decodeBlock(block.body)
-      const { type } = data
+      const payload = decodeBlock(block.body)
+      const { type } = payload
 
       switch (type) {
         // Validate create task blocks
         case 'task': {
-          const { title, date } = data
+          const { title, date } = payload
           // Reject task invalid blocks with a reason
           if (!title || title === '') return 'Task Must have a title'
           if (date > Date.now()) return 'Task from future'
@@ -21,18 +22,30 @@ function TasksSlice () {
 
         // Validate update status blocks
         case 'update': {
-          const { taskId, status } = data
+          const { status } = payload
           if (!ALLOWED_STATES.find(s => status)) return 'InvalidStatus'
 
           // Validate block against existing state
-          const task = state.find(t => t.id.equals(taskId))
-
+          const task = findTaskByHead(state, block.parentSig)
           if (!task) return 'TaskNotFound'
-          if (task.status === status) return 'StatusNotNew'
 
-          // Give write access the author.
-          // if (!task.author.equals(block.key)) return 'AccessDenied'
-          // TODO: write access to friends
+          if (task.status === status) return 'StatusNotNew'
+          if (!task.owner.equals(block.key)) return 'AccessDenied'
+        } break
+
+        // Validate 'assign/lease' blocks
+        case 'assign': {
+          const { taskId } = payload
+
+          const task = findTaskByHead(state, block.parentSig)
+          if (!task) return 'TaskNotFound'
+
+          // Either we can lock down the assign capabilities to
+          // task-author.
+          if (!task.author.equals(block.key)) return 'AccessDenied'
+
+          // Or the current owner (subleasing)
+          // if (!task.owner.equals(block.key)) return 'AccessDenied'
         } break
 
         // Silently ignore unrelated blocks
@@ -48,29 +61,43 @@ function TasksSlice () {
     // Apply block content to mutate state
     reducer ({ block, state }) {
       const tasks = [...state]
-      const data = decodeBlock(block.body)
-      const { type } = data
+      const payload = decodeBlock(block.body)
+      const { type } = payload
 
       switch (type) {
         case 'task': {
-          const task = data
+          const task = payload
           // Set task-id to the block-signature that created it.
-          // this will be useful later when we attempt to update it's status.
           task.id = block.sig
           task.author = block.key
-          task.updated = data.date
-
+          task.updated = payload.date
+          task.owner = block.key
+          task.head = block.sig
           tasks.push(task) // Append task to list
         } break
 
         case 'update': {
-          const task = tasks.find(t => t.id.equals(data.taskId))
-          task.updated = data.date
-          task.status = data.status
+          const task = findTaskByHead(state, block.parentSig)
+          task.updated = payload.date
+          task.status = payload.status
+          task.head = block.sig
         } break
+
+        case 'assign': {
+          const task = findTaskByHead(state, block.parentSig)
+          task.updated = payload.date
+          task.owner = payload.owner
+          task.head = block.sig
+          break
+        }
       }
       return Object.freeze(tasks)
     }
   }
+}
+
+// TODO: extend picostore/repo with custom indices?
+function findTaskByHead (state, sig) {
+  return state.find(t => t.head.equals(sig))
 }
 module.exports = TasksSlice

@@ -1,4 +1,4 @@
-const { SimpleKernel } = require('picostack')
+const { SimpleKernel, Feed } = require('picostack')
 const { mute } = require('piconuro')
 
 const TasksSlice = require('./slices/tasks.js')
@@ -12,7 +12,8 @@ class Kernel extends SimpleKernel {
   }
 
   async createTask (title = 'unnamed task') {
-    const feed = await this.createBlock('task', {
+    const branch = new Feed() // create new branch
+    const feed = await this.createBlock(branch, 'task', {
       title,
       status: 'todo'
     })
@@ -20,8 +21,27 @@ class Kernel extends SimpleKernel {
   }
 
   async setStatus (taskId, status) {
-    const feed = await this.createBlock('update', {
+    // Find task in lowlevel state
+    const task = this.store.state.tasks.find(
+      t => t.id.equals(taskId)
+    )
+    if (!task) throw new Error('TaskNotFound')
+
+    // Load issue-feed.
+    const branch = await this.repo.loadFeed(task.head)
+
+    const feed = await this.createBlock(branch, 'update', {
       taskId, status
+    })
+
+    return feed.last.id // block id
+  }
+
+  async assign (taskId, pk) {
+    const feed = await this.createBlock('assign', {
+      owner: pk
+      // permissions: '*', // TODO: selective updates
+      // leaseTime: 24*60*60*1000, // TODO: auto-release
     })
     return feed.last.id // block id
   }
@@ -38,8 +58,7 @@ class Kernel extends SimpleKernel {
       $n,
       tasks => tasks.map(task => ({
         ...task,
-        owner: userId?.equals(task.author),
-        writable: true // TODO: !!task.accessList.find(k => k.equals(userId)
+        writable: userId?.equals(task.owner)
       }))
         // Sort by activity
         .sort((a, b) => b.updatedAt - a.updatedAt)

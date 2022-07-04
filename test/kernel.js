@@ -49,6 +49,44 @@ test('Task-status can be updated', async t => {
   t.equal(status, 'in-progress', 'Task state is "in-progress"')
 })
 
+test("Bob can't modify alice's task", async t => {
+  const alice = await spawnPeer(['Eat cookie'])
+  const bob = await spawnPeer()
+
+  // Connect peers
+  alice.spawnWire({ client: true }).open(bob.spawnWire())
+
+  const [task] = await next(bob.$tasks())
+  t.ok(task, 'Bob sees the cookie')
+  t.notOk(task.writable, 'Does not belong to bob')
+  try {
+    await bob.setStatus(task.id, 'done')
+    t.fail('Bob ate the cookie')
+  } catch (err) {
+    t.equal(err.message, 'InvalidBlock: AccessDenied', 'Kernel says no')
+    t.end()
+  }
+})
+
+test('Alice can assign the task to bob', async t => {
+  const alice = await spawnPeer(['Run a mile'])
+  const bob = await spawnPeer()
+
+  // Connect peers
+  alice.spawnWire({ client: true }).open(bob.spawnWire())
+
+  let [task] = await next(bob.$tasks())
+  t.ok(task, 'Bob sees the task')
+  t.notOk(task.writable, 'Does not belong to bob')
+
+  await alice.assign(task.id, bob.pk)
+
+  task = (await next(bob.$tasks()))[0]
+  t.ok(task.writable, 'Belongs to bob')
+
+  await bob.setStatus(task.id, 'done')
+})
+
 // Test Helpers
 function makeDatabase () {
   return levelup(memdown())
