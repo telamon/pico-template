@@ -187,6 +187,11 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
+"@socketsupply/tonic@^14.1.5":
+  version "14.1.5"
+  resolved "https://registry.yarnpkg.com/@socketsupply/tonic/-/tonic-14.1.5.tgz#eb194b688f6b30214f275a9208dbb28b7d05d74f"
+  integrity sha512-mObS/IRefcVPyYa6Ry8OdQbFzCpKFMWfihgTs3XOKF3va1oRcwedchjTUlNfcwtrG+mpKEO/ysW8Hf5m5B30TA==
+
 "@telamon/picostore@^1.6.4":
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/@telamon/picostore/-/picostore-1.6.4.tgz#44bbd2485b327f70ae56c1437a9a7bb49c7271bf"
