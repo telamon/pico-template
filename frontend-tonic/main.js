@@ -3,12 +3,13 @@ import leveljs from 'level-js'
 import Tonic from '@socketsupply/tonic/index.esm.js'
 import { write, mute, combine } from 'piconuro'
 import Kernel from '../blockend/'
+import Modem56 from '../public/modem.js'
 
 // -- Bootloader / KernelAPI
 export function makeDatabase (name = 'picotodo') {
   levelup(leveljs('picotodo'))
 }
-const Modem56 = window.Modem56
+// const Modem56 = window.Modem56
 
 // Change topic to something else if
 // you want to have a private todo-board.
@@ -29,16 +30,19 @@ export async function boot () {
     done = err => !err ? resolve() : (setRun('error') && reject(err))
   })
   setRun('booting')
+  try {
+    // Initializes slices/stores and peers identity.
+    await kernel.boot()
 
-  // Initializes slices/stores and peers identity.
-  await kernel.boot()
-
-  // Connect to swarm
-  if (!Modem56) throw new Error('Modem not available, did you load it?')
-  const modem = new Modem56()
-  modem.join(TOPIC, () => kernel.spawnWire())
-  setRun('running')
-  done()
+    // Connect to swarm
+    if (!Modem56) throw new Error('Modem not available, did you load it?')
+    const modem = new Modem56()
+    modem.join(TOPIC, () => kernel.spawnWire())
+    setRun('running')
+    done()
+  } catch (err) {
+    done(err)
+  }
   return bootLock
 }
 

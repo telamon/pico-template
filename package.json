@@ -8,10 +8,10 @@
     "test": "tape test/*.js",
     "debug": "node inspect $(npm bin)/tape test/*.js",
     "prepublishOnly": "standard && npm test",
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "cd frontend-tonic/ && rollup -c rollup.js",
+    "dev": "cd frontend-tonic/ && rollup -c rollup.js -w",
     "start": "sirv public",
-    "surge": "yarn build && surge public/ pico-todo.surge.sh",
+    "surge": "yarn build && surge frontend-tonic/pub/ decentrello-tonic.surge.sh",
     "signal": "hyperswarm-web"
   },
   "license": "AGPL-3.0-or-later",
