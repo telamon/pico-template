@@ -11,7 +11,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
-    "surge": "yarn build && surge public/ pico-todo.surge.sh",
+    "surge": "yarn build && surge public/ decentrello.surge.sh",
     "signal": "hyperswarm-web"
   },
   "license": "AGPL-3.0-or-later",
