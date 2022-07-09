@@ -41,14 +41,14 @@ const updateStatus = (id, status) => {
     {#each $tasks as task}
       <task>
         <strong>{task.title}</strong>
-        <div>
+        <select>
           {#each options as status}
-            <btn on:click={() => updateStatus(task.id, status)}
+            <option on:click={() => updateStatus(task.id, status)}
                 class:inverse={status !== task.status}>
               {status}
-            </btn>
+            </option>
           {/each}
-        </div>
+        </select>
         <p>
           Author: <samp>{task.author?.toString('hex').slice(0, 8)}</samp>
           <br/>
