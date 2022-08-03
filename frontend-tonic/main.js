@@ -7,14 +7,14 @@ import Modem56 from '../public/modem.js'
 
 // -- Bootloader / KernelAPI
 export function makeDatabase (name = 'picotodo') {
-  levelup(leveljs('picotodo'))
+  return levelup(leveljs(name))
 }
 // const Modem56 = window.Modem56
 
 // Change topic to something else if
 // you want to have a private todo-board.
 const TOPIC = 'picotodo-testnet'
-const DB = levelup(leveljs('picotodo')) // Open IndexedDB
+const DB = makeDatabase()
 
 export const kernel = new Kernel(DB)
 
