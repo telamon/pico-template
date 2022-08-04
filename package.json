@@ -1,8 +1,9 @@
 {
-  "name": "pico-seed",
+  "name": "pico-todo-kernel",
   "version": "1.0.0",
-  "description": "Picostack todomvc seed",
-  "main": "index.js",
+  "description": "Standalone pico-todo Kernel",
+  "main": "blockend/index.js",
+  "files": "blockend/",
   "scripts": {
     "lint": "standard",
     "test": "tape test/*.js",
@@ -15,7 +16,7 @@
     "signal": "hyperswarm-web"
   },
   "license": "AGPL-3.0-or-later",
-  "homepage": "https://github.com/telamon/pico-stack",
+  "homepage": "https://github.com/telamon/pico-template/tree/production",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
@@ -34,9 +35,10 @@
     "standard": "^17.0.0",
     "surge": "^0.23.1",
     "svelte": "^3.49.0",
-    "tape": "^5.5.3"
+    "tape": "^5.5.3",
+    "picostack": "^1.4.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "picostack": "^1.4.0"
   }
 }
