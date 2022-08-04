@@ -11,6 +11,59 @@ as template engine.
 
 [DEMO](https://pico-todo.surge.sh/)
 
+## module `pico-todo-kernel`
+The `production` branch of this project surged ahead and a full todo-app
+is currently being produced.
+
+This kernel is published on npm
+Here's the current API to use it:
+```bash
+npm i --save pico-todo-kernel browser-level pico-stack piconuro
+```
+
+```js
+import Kernel from 'pico-todo-kernel'
+import { BrowserLevel } from 'browser-level' // or 'level' for node
+
+// --- Bootloader
+const database = new BrowserLevel('myTodo', { valueEncoding: 'buffer' })
+
+export const kernel = new Kernel(database)
+
+await kernel.boot()
+
+// --- Reading state
+
+kernel.$connections(conn => {
+  document.findElementById('peers').innerText = conn.length
+})
+
+kernel.$tasks(tasks => {
+  const elem = document.findElementById('tasks')
+  let html = ''
+  for (const task of tasks) {
+    html += `<li>${task.title}</li>`
+  }
+  elem.innerHTML = html
+})
+
+// --- Writing state
+
+// new task
+const taskId = await kernel.createTask('Water plants')
+
+// modify status 'todo|in-progress|to-verify|done|wontfix'
+await kernel.setStatus(taskId, 'in-progress')
+
+// assign to other user
+await kernel.assign(taskId, daphnePublicKey)
+
+// note: it's currently set automatically return original ownership
+// of task if other user sets status to either 'to-verify|done|wontfix'
+```
+
+Let me know if i can change/improve it.
+
 ## Getting started
 
 Create your project if you already haven't

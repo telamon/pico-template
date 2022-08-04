@@ -5,7 +5,7 @@ const DONE = 'done'
 const WONTFIX = 'wontfix'
 
 const ALLOWED_STATES = [TODO, IN_PROGRESS, TO_VERIFY, DONE, WONTFIX]
-const OWNERSHIP_CHANGE = [TO_VERIFY]
+const OWNERSHIP_CHANGE = [TO_VERIFY, DONE, WONTFIX]
 const DECAY = [DONE, WONTFIX]
 
 module.exports = {

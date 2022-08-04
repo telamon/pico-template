@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Standalone pico-todo Kernel",
   "main": "blockend/index.js",
-  "files": "blockend/",
+  "files": [
+    "blockend/*"
+  ],
   "scripts": {
     "lint": "standard",
     "test": "tape test/*.js",
     "debug": "node inspect $(npm bin)/tape test/*.js",
-    "prepublishOnly": "standard && npm test",
+    "prepublishOnly": "standard blockend/ && yarn test",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
