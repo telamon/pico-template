@@ -6,7 +6,7 @@ const TasksSlice = require('./slices/tasks.js')
 class Kernel extends SimpleKernel {
   constructor (db) {
     super(db) // Initialize superclass
-
+    this.repo.allowDetached = true
     // Register slices/reducers
     this.store.register(TasksSlice())
   }
@@ -21,24 +21,19 @@ class Kernel extends SimpleKernel {
   }
 
   async setStatus (taskId, status) {
-    // Find task in lowlevel state
-    const task = this.store.state.tasks.find(
-      t => t.id.equals(taskId)
-    )
-    if (!task) throw new Error('TaskNotFound')
-
     // Load issue-feed.
-    const branch = await this.repo.loadFeed(task.head)
-
+    const branch = await this.repo.resolveFeed(taskId)
+    if (!branch) throw new Error('unknown task')
     const feed = await this.createBlock(branch, 'update', {
       taskId, status
     })
-
     return feed.last.id // block id
   }
 
   async assign (taskId, pk) {
-    const feed = await this.createBlock('assign', {
+    const branch = await this.repo.resolveFeed(taskId)
+    if (!branch) throw new Error('unknown task')
+    const feed = await this.createBlock(branch, 'assign', {
       owner: pk
       // permissions: '*', // TODO: selective updates
       // leaseTime: 24*60*60*1000, // TODO: auto-release
@@ -63,6 +58,19 @@ class Kernel extends SimpleKernel {
         // Sort by activity
         .sort((a, b) => b.updatedAt - a.updatedAt)
     )
+  }
+
+  // This app uses many feeds per author.
+  // Modified onquery handler using repo.listFeeds() instead of
+  // repo.listHeads().
+  async onquery (params) {
+    const feeds = []
+    const heads = await this.repo.listFeeds()
+    for (const { value } of heads) {
+      const f = await this.repo.resolveFeed(value)
+      if (f) feeds.push(f)
+    }
+    return feeds
   }
 }
 

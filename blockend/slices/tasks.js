@@ -1,5 +1,8 @@
 const { decodeBlock } = require('picostack').SimpleKernel
-const ALLOWED_STATES = ['todo', 'in-progress', 'to-verify', 'done', 'wontfix']
+const {
+  ALLOWED_STATES,
+  OWNERSHIP_CHANGE
+} = require('../constants')
 
 function TasksSlice () {
   return {
@@ -10,7 +13,6 @@ function TasksSlice () {
     filter ({ block, state }) {
       const payload = decodeBlock(block.body)
       const { type } = payload
-
       switch (type) {
         // Validate create task blocks
         case 'task': {
@@ -35,8 +37,6 @@ function TasksSlice () {
 
         // Validate 'assign/lease' blocks
         case 'assign': {
-          const { taskId } = payload
-
           const task = findTaskByHead(state, block.parentSig)
           if (!task) return 'TaskNotFound'
 
@@ -81,6 +81,10 @@ function TasksSlice () {
           task.updated = payload.date
           task.status = payload.status
           task.head = block.sig
+
+          if (~OWNERSHIP_CHANGE.indexOf(task.status)) {
+            task.owner = task.author
+          }
         } break
 
         case 'assign': {

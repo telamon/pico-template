@@ -17,13 +17,13 @@
   "license": "AGPL-3.0-or-later",
   "homepage": "https://github.com/telamon/pico-stack",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "hyperswarm-web": "^2.2.0",
     "level-js": "^6.1.0",
     "levelup": "^5.1.1",
     "memdown": "^6.1.1",
-    "rollup": "^2.73.0",
+    "rollup": "^2.77.2",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-node-polyfills": "^0.2.1",
@@ -33,10 +33,10 @@
     "sirv-cli": "^2.0.2",
     "standard": "^17.0.0",
     "surge": "^0.23.1",
-    "svelte": "^3.48.0",
+    "svelte": "^3.49.0",
     "tape": "^5.5.3"
   },
   "dependencies": {
-    "picostack": "^1.2.0"
+    "picostack": "^1.4.0"
   }
 }
